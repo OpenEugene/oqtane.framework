@@ -134,8 +134,7 @@
             if (PageState.User != null) 
             {
                 // preserve edit mode for authenticated users
-                var userSettings = new Dictionary<string, string> { { "CP-editmode", (PageState.EditMode) ? PageState.Page.PageId.ToString() : "-1" } };
-                await SettingService.UpdateUserSettingsAsync(userSettings, PageState.User.UserId);
+                await SettingService.AddOrUpdateSettingAsync(EntityNames.User, PageState.User.UserId, "CP-editmode", (PageState.EditMode) ? PageState.Page.PageId.ToString() : "-1", false);
             }
 
             // preserve other querystring parameters
@@ -148,8 +147,7 @@
         {
             if (PageState.Page.IsPersonalizable && PageState.User != null && UserSecurity.IsAuthorized(PageState.User, RoleNames.Registered))
             {
-                PageState.EditMode = true;
-                NavigationManager.NavigateTo(NavigateUrl(page.Path, "edit=" + ((PageState.EditMode) ? "true" : "false")));
+                NavigationManager.NavigateTo(NavigateUrl(page.Path, "edit=" + PageState.EditMode.ToString()));
             }
         }
     }

@@ -331,7 +331,7 @@
         if (_pageId != "-")
         {
             _modules = await ModuleService.GetModulesAsync(PageState.Page.SiteId);
-            _modules = _modules.Where(module => module.PageId == int.Parse(_pageId) &&
+            _modules = _modules.Where(module => module.PageId == int.Parse(_pageId) && module.IsDeleted == false &&
                 UserSecurity.IsAuthorized(PageState.User, PermissionNames.View, module.PermissionList) &&
                 (_moduleType == "add" || module.ModuleDefinition.IsPortable))
                 .ToList();
@@ -454,7 +454,7 @@
     {
         foreach (var permission in PageState.Page.PermissionList.Where(item => item.PermissionName == pagePermission))
         {
-            permissions.Add(new Permission { SiteId = siteId, EntityName = EntityNames.Module, PermissionName = modulePermission, RoleId = permission.RoleId, UserId = permission.UserId, IsAuthorized = permission.IsAuthorized });
+            permissions.Add(new Permission { SiteId = siteId, EntityName = EntityNames.Module, PermissionName = modulePermission, RoleName = permission.RoleName, UserId = permission.UserId, IsAuthorized = permission.IsAuthorized });
         }
         return permissions;
     }
