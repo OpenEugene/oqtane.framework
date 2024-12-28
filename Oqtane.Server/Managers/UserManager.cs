@@ -374,6 +374,8 @@ namespace Oqtane.Managers
                                     _users.UpdateUser(user);
                                     _logger.Log(LogLevel.Information, this, LogFunction.Security, "User Login Successful For {Username} From IP Address {IPAddress}", user.Username, LastIPAddress);
 
+                                    _syncManager.AddSyncEvent(alias, EntityNames.User, user.UserId, "Login");
+
                                     if (setCookie)
                                     {
                                         await _identitySignInManager.SignInAsync(identityuser, isPersistent);
@@ -510,7 +512,10 @@ namespace Oqtane.Managers
             user = _users.GetUser(user.Username);
             if (user != null)
             {
-                if (user.TwoFactorRequired && user.TwoFactorCode == token && DateTime.UtcNow < user.TwoFactorExpiry)
+                var alias = _tenantManager.GetAlias();
+                var twoFactorSetting = _settings.GetSetting(EntityNames.Site, alias.SiteId, "LoginOptions:TwoFactor")?.SettingValue ?? "false";
+                var twoFactorRequired = twoFactorSetting == "required" || user.TwoFactorRequired;
+                if (twoFactorRequired && user.TwoFactorCode == token && DateTime.UtcNow < user.TwoFactorExpiry)
                 {
                     user.IsAuthenticated = true;
                 }
