@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Oqtane.Documentation;
-using Oqtane.Infrastructure;
 using Oqtane.Models;
 using Oqtane.Repository;
 using Oqtane.Shared;
 
-namespace Oqtane.SiteTemplates
+namespace Oqtane.Infrastructure.SiteTemplates
 {
     [PrivateApi("Mark Site-Template classes as private, since it's not very useful in the public docs")]
     public class DefaultSiteTemplate : ISiteTemplate

@@ -70,7 +70,6 @@ namespace Oqtane
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddOptions<List<Database>>().Bind(Configuration.GetSection(SettingKeys.AvailableDatabasesSection));
-            services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(10)); // increase from default of 5 seconds
 
             // register scoped core services
             services.AddScoped<IAuthorizationHandler, PermissionHandler>()
@@ -137,10 +136,12 @@ namespace Oqtane
                     policy =>
                     {
                         // allow .NET MAUI client cross origin calls
-                        policy.WithOrigins("https://0.0.0.0", "http://0.0.0.0", "app://0.0.0.0")
+                        policy.WithOrigins("https://0.0.0.1", "http://0.0.0.1", "app://0.0.0.1")
                             .AllowAnyHeader().AllowAnyMethod().AllowCredentials();
                     });
             });
+
+            services.AddOutputCache();
 
             services.AddMvc(options =>
             {
@@ -222,6 +223,7 @@ namespace Oqtane
             app.UseJwtAuthorization();
             app.UseRouting();
             app.UseCors();
+            app.UseOutputCache();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseAntiforgery();
